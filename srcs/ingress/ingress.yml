@@ -1,0 +1,53 @@
+# apiVersion: networking.k8s.io/v1beta1
+# kind: Ingress
+# metadata:
+#   name: test-ingress
+#   annotations:
+#     nginx.ingress.kubernetes.io/rewrite-target: /
+# spec:
+#   rules:
+#   - http:
+#       paths:
+#       - path: /testpath
+#         backend:
+#           serviceName: test
+#           servicePort: 80
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  annotations:
+    kubernetes.io/ingress.class: nginx
+  name: nginx-ingress
+spec:
+  rules:
+    http:
+      paths:
+        - path: /
+          backend:
+            serviceName: toto-app-svc
+
+---
+
+apiVersion: v1
+kind: Service
+metadata:
+  name: ingress-nginx
+  namespace: ingress-nginx
+spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    protocol: TCP
+  - name: https
+    port: 443
+    targetPort: 443
+    protocol: TCP
+  externalIPs:
+    - 10.0.0.1
+    - 10.0.0.2
+    - 10.0.0.3
+  selector:
+    app: ingress-nginx
