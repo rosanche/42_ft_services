@@ -1,31 +1,61 @@
-apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
-kind: Deployment
+apiVersion: v1
+kind: Service
 metadata:
-  name: nginx-deployment
+  name: ingress-nginx
 spec:
+  type: NodePort
+  ports:
+  - name: http
+    port: 80
+    targetPort: 80
+    protocol: TCP
+  - name: https
+    port: 443
+    targetPort: 443
+    protocol: TCP
   selector:
-    matchLabels:
-      app: nginx
-  # replicas: 4 # Update the replicas from 2 to 4
-  template:
-    metadata:
-      labels:
-        app: nginx
-    spec:
-      containers:
-      - name: nginx
-        image: nginx:1.8
-        ports:
-        - containerPort: 80
-        - containerPort: 443
+    app: nginx-app
 
 ---
 
-apiVersion: v1
-kind: Secret
+apiVersion: apps/v1
+kind: Deployment
 metadata:
-  name: mysecret
-type: Opaque
-data:
-  username: YWRtaW4=
-  password: MWYyZDFlMmU2N2Rm
+  name: nginx-deployment
+  labels:
+    app: nginx-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: nginx-app
+  template:
+    metadata:
+      labels:
+        app: nginx-app
+    spec:
+      containers:
+      - name: nginx
+        image: services/nginx
+        ports:
+        - containerPort: 80
+          name: http
+        - containerPort: 443
+          name: https
+
+---
+
+apiVersion: extensions/v1beta1
+kind: Ingress
+metadata:
+  name: ingress
+  annotations:
+    kubernetes.io/ingress.class: nginx
+spec:
+  rules:
+  - http:
+      paths:
+      - path: /
+        backend:
+          serviceName: ingress-nginx
+          servicePort: 80

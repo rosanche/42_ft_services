@@ -1,5 +1,8 @@
 # Install and verify that docker is running
-bash init_docker.sh
+# bash init_docker.sh
+docker-machine create default
+docker-machine start
+eval $(docker-machine env default)
 if [[ $? == 0 ]]
 then
     printf "Docker is running\n"
@@ -30,11 +33,20 @@ else
     exit
 fi
 
-# Ingress controller
-docker pull alpine
-# cd srcs/nginx
-docker build -t nginx srcs/nginx/
+# Ngxinx server with ingress controller
+docker build -t services/nginx srcs/nginx/
+sleep 1
 kubectl apply -f srcs/nginx/nginx.yml
-kubectl apply -f srcs/ingress/ingress.yml
+sleep 1
+
+# Ingress controller
+# docker pull alpine
+# # cd srcs/nginx
+# docker build -t nginx srcs/nginx/
+# kubectl apply -f srcs/nginx/nginx.yml
+# kubectl apply -f srcs/ingress/ingress.yml
+
+# Start dashboard
+# minikube dashboard &> /dev/null
 
 bash
