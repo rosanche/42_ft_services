@@ -1,83 +1,126 @@
-# Communicate with outside of the cluster
 apiVersion: v1
-kind: Service
+kind: Secret
 metadata:
-  name: wordpress-mysql
-  labels:
-    app: wordpress
-spec:
-  ports:
-    - port: 3306
-  selector:
-    app: wordpress
-    tier: mysql
-  clusterIP: None
+  name: mysql-secrets
+type: Opaque
+data:
+  ROOT_PASSWORD: c3VwZXItc2VjcmV0LXBhc3N3b3JkCg==
 
 ---
 
-# Create the volume of datas downloaded
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
-  name: mysql-pv-claim
-  labels:
-    app: wordpress
+  name: mysql-volume
 spec:
   accessModes:
     - ReadWriteOnce
   resources:
     requests:
-      storage: 20Gi
+      storage: 2Gi
 
 ---
 
-# De[loy the database
-apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
-kind: Deployment
-metadata:
-  name: wordpress-mysql
-  labels:
-    app: wordpress
-spec:
-  selector:
-    matchLabels:
-      app: wordpress
-      tier: mysql
-  strategy:
-    type: Recreate
-  template:
-    metadata:
-      labels:
-        app: wordpress
-        tier: mysql
-    spec:
-      containers:
-      - image: mysql:5.6
-        name: mysql
-        env:
-        # password creation for the data base
-        - name: MYSQL_ROOT_PASSWORD 
-          valueFrom:
-            secretKeyRef:
-              name: mysql-pass
-              key: password
-        ports:
-        - containerPort: 3306
-          name: mysql
-        volumeMounts:
-        - name: mysql-persistent-storage
-          mountPath: /var/lib/mysql
-      volumes:
-      - name: mysql-persistent-storage
-        persistentVolumeClaim:
-          claimName: mysql-pv-claim
+  apiVersion: apps/v1
+  kind: Deployment
+  metadata:
+    name: mysql-deployment
+    labels:
+      app: mysql
+  spec:
+    replicas: 1
+    selector:
+      matchLabels:
+        app: mysql
+    template:
+      metadata:
+        labels:
+          app: mysql
+      spec:
+        containers:
+          - name: mysql
+            image: services/mysql
+            # ports:
+            #   - containerPort: 3306
+            volumeMounts:
+              - mountPath: "/var/lib/mysql"
+                subPath: "mysql"
+                name: mysql-data
+            env:
+              - name: MYSQL_ROOT_PASSWORD
+                valueFrom:
+                  secretKeyRef:
+                    name: mysql-secrets
+                    key: ROOT_PASSWORD
+        volumes:
+          - name: mysql-data
+            persistentVolumeClaim:
+              claimName: mysql-volume
 
----
+# # Communicate with outside of the cluster
+# apiVersion: v1
+# kind: Service
+# metadata:
+#   name: wordpress-mysql
+#   labels:
+#     app: wordpress
+# spec:
+#   ports:
+#     - port: 3306
+#   selector:
+#     app: wordpress
+#     tier: mysql
+#   clusterIP: None
 
-apiVersion: v1
-kind: Secret
-metadata:
-  name: mysql-pass
-type: Opaque
-data:
-  password: c3VwZXItc2VjcmV0LXBhc3N3b3Jk
+# ---
+
+# # De[loy the database
+# apiVersion: apps/v1 # for versions before 1.9.0 use apps/v1beta2
+# kind: Deployment
+# metadata:
+#   name: wordpress-mysql
+#   labels:
+#     app: wordpress
+# spec:
+#   selector:
+#     matchLabels:
+#       app: wordpress
+#       tier: mysql
+#   strategy:
+#     type: Recreate
+#   template:
+#     metadata:
+#       labels:
+#         app: wordpress
+#         tier: mysql
+#     spec:
+#       containers:
+#       - image: mysql:5.6
+#         name: mysql
+#         env:
+#         # password creation for the data base
+#         - name: MYSQL_ROOT_PASSWORD 
+#           valueFrom:
+#             secretKeyRef:
+#               name: mysql-pass
+#               key: password
+#         ports:
+#         - containerPort: 3306
+#           name: mysql
+#         volumeMounts:
+#         - name: mysql-persistent-storage
+#           mountPath: /var/lib/mysql
+#       volumes:
+#       - name: mysql-persistent-storage
+#         persistentVolumeClaim:
+#           claimName: mysql-pv-claim
+
+# ---
+
+# apiVersion: v1
+# kind: Secret
+# metadata:
+#   name: mysql-pass
+# type: Opaque
+# data:
+#   password: c3VwZXItc2VjcmV0LXBhc3N3b3Jk
