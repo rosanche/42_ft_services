@@ -16,8 +16,11 @@ RUN mkdir -p /etc/nginx/ssl && openssl req -newkey rsa:2048 -x509 -days 365 -nod
 
 # Nginnx config
 RUN rm /etc/nginx/nginx.conf
-
 COPY ./nginx.conf /etc/nginx/nginx.conf
+
+COPY setup.sh .
+
+RUN chmod +x setup.sh
 
 EXPOSE 80 443
 CMD nginx -g "daemon off;"

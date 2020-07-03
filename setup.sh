@@ -44,7 +44,18 @@ kubectl create secret generic -n metallb-system memberlist --from-literal=secret
 # Ngxinx server with ingress controller
 docker build -t services/nginx srcs/nginx/
 sleep 1
+# kubectl apply -f srcs/nginx/nginx.yml
+# sleep 1
+
+docker build -t services/mysql srcs/mysql/
+sleep 1
+docker build -t services/wordpress srcs/wordpress/
+sleep 1
 kubectl apply -f srcs/nginx/nginx.yml
+sleep 1
+kubectl apply -f srcs/mysql/my-sql.yml
+sleep 1
+kubectl apply -f srcs/wordpress/wordpress.yml
 sleep 1
 
 # Ingress controller

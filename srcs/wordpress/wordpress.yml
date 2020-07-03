@@ -7,9 +7,12 @@ metadata:
 spec:
   ports:
     - port: 5050
+      targetPort: 5050
+      protocol: TCP
+      name: wordpress
   selector:
     app: wordpress
-    tier: frontend
+    tier: mysql
   type: LoadBalancer
 
 ---
@@ -39,17 +42,17 @@ spec:
   selector:
     matchLabels:
       app: wordpress
-      tier: frontend
+      tier: mysql
   strategy:
     type: Recreate
   template:
     metadata:
       labels:
         app: wordpress
-        tier: frontend
+        tier: mysql
     spec:
       containers:
-      - image: wordpress:4.8-apache
+      - image: services/wordpress
         name: wordpress
         env:
         - name: WORDPRESS_DB_HOST
@@ -58,7 +61,7 @@ spec:
           valueFrom:
             secretKeyRef:
               name: mysql-pass
-              key: password
+              key: ROOT_PASSWORD
         ports:
         - containerPort: 5050
           name: wordpress
