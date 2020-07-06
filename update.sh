@@ -24,3 +24,5 @@ kubectl apply -f srcs/mysql/my-sql.yml
 sleep 1
 kubectl apply -f srcs/wordpress/wordpress.yml
 sleep 1
+
+minikube dashboard &

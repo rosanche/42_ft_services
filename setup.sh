@@ -18,8 +18,8 @@
 # # ln -sf /goinfre/${USER}/.minikube ~/.minikube
 # # chmod u+s /Users/rosanche/.minikube/bin/docker-machine-driver-hyperkit 
 # # chown root:wheel /Users/rosanche/.minikube/bin/docker-machine-driver-hyperkit && sudo chmod u+s /Users/rosanche/.minikube/bin/docker-machine-driver-hyperkit
-# # export MINIKUBE_HOME=/goinfre/${USER}/
-export MINIKUBE_HOME=/tmp
+export MINIKUBE_HOME=/goinfre/${USER}/
+# export MINIKUBE_HOME=/tmp
 minikube start --vm-driver=virtualbox
 
 if [[ $? == 0 ]]

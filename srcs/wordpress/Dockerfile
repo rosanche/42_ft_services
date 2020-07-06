@@ -8,7 +8,9 @@ RUN wget https://wordpress.org/latest.tar.gz \
 && mv wordpress/* /www \
 && rm -rf /var/cache/apk/*
 
-COPY src/wp-config.php /www/wp-config.php
+COPY ./wp-config.php /www/wp-config.php
 COPY setup.sh .
 
 EXPOSE 5050
+
+CMD ./setup.sh

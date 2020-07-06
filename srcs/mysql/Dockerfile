@@ -1,6 +1,11 @@
 FROM alpine:latest
 
-RUN service mysql start
+# installation
+RUN apk update \
+&& apk add mariadb mariadb-client && apk add --no-cache --upgrade bash \
+&& rm -rf /var/cache/apk/*
+
+# RUN service mysql start
 RUN mysql --version
 
 COPY setup.sh .
