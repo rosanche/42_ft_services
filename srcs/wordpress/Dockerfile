@@ -11,6 +11,8 @@ RUN wget https://wordpress.org/latest.tar.gz \
 COPY ./wp-config.php /www/wp-config.php
 COPY setup.sh .
 
+RUN chmod +x setup.sh
+
 EXPOSE 5050
 
 CMD ./setup.sh

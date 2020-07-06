@@ -8,8 +8,12 @@ RUN apk update \
 # RUN service mysql start
 RUN mysql --version
 
-COPY setup.sh .
+# Copy initialisation script
+COPY ./init_docker.sh .
+COPY ./setup.sh .
 
-RUN chmod +x setup.sh
+# Add permission
+RUN chmod 777 init_docker.sh
+RUN chmod 777 setup.sh
 
-CMD setup.sh
+ENTRYPOINT [ "./init_docker.sh" ]

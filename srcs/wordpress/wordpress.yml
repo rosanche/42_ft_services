@@ -24,7 +24,7 @@ metadata:
   labels:
     app: wordpress
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
       app: wordpress
@@ -53,17 +53,17 @@ spec:
           name: wordpress
         imagePullPolicy: IfNotPresent
 
----
+# ---
 
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  namespace: metallb-system
-  name: config
-data:
-  config: |
-    address-pools:
-    - name: default
-      protocol: layer2
-      addresses:
-        - 192.168.99.120-192.168.99.120
+# apiVersion: v1
+# kind: ConfigMap
+# metadata:
+#   namespace: metallb-system
+#   name: config
+# data:
+#   config: |
+#     address-pools:
+#     - name: default
+#       protocol: layer2
+#       addresses:
+#         - 192.168.99.124-192.168.99.124
