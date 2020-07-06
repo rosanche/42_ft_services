@@ -1,24 +1,25 @@
 # Install and verify that docker is running
 # bash init_docker.sh
-#docker-machine create default
-#docker-machine start
-#eval $(docker-machine env default)
-#if [[ $? == 0 ]]
-#then
+# docker-machine create default
+# docker-machine start
+# eval $(docker-machine env default)
+# if [[ $? == 0 ]]
+# then
 #    printf "Docker is running\n"
-#else
+# else
 #    printf "Docker can't run\n"
 #    exit
-#fi
+# fi
 
-# Install and launch minikube
+# # # Install and launch minikube
 # minikube delete
 # rm -rf ~/.minikube
-# mkdir -p /goinfre/${USER}/.minikube
-# ln -sf /goinfre/${USER}/.minikube ~/.minikube
-# chmod u+s /Users/rosanche/.minikube/bin/docker-machine-driver-hyperkit 
-# chown root:wheel /Users/rosanche/.minikube/bin/docker-machine-driver-hyperkit && sudo chmod u+s /Users/rosanche/.minikube/bin/docker-machine-driver-hyperkit
-export MINIKUBE_HOME=/goinfre/${USER}/
+# # mkdir -p /goinfre/${USER}/.minikube
+# # ln -sf /goinfre/${USER}/.minikube ~/.minikube
+# # chmod u+s /Users/rosanche/.minikube/bin/docker-machine-driver-hyperkit 
+# # chown root:wheel /Users/rosanche/.minikube/bin/docker-machine-driver-hyperkit && sudo chmod u+s /Users/rosanche/.minikube/bin/docker-machine-driver-hyperkit
+# # export MINIKUBE_HOME=/goinfre/${USER}/
+export MINIKUBE_HOME=/tmp
 minikube start --vm-driver=virtualbox
 
 if [[ $? == 0 ]]

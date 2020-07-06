@@ -42,7 +42,7 @@ spec:
           name: http
         - containerPort: 443
           name: https
-        imagePullPolicy: Never
+        imagePullPolicy: IfNotPresent
 
 ---
 

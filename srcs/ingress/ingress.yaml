@@ -20,34 +20,33 @@ metadata:
     kubernetes.io/ingress.class: nginx
   name: nginx-ingress
 spec:
-  rules:
-    http:
-      paths:
-        - path: /
-          backend:
-            serviceName: toto-app-svc
+  backend:
+    serviceName: service-nginx
+    servicePort: 80
 
 ---
 
 apiVersion: v1
 kind: Service
 metadata:
-  name: ingress-nginx
+  name: service-nginx
   namespace: ingress-nginx
+  labels:
+    app: nginx
 spec:
   type: NodePort
   ports:
   - name: http
     port: 80
-    targetPort: 80
+    targetPort: http
     protocol: TCP
   - name: https
     port: 443
-    targetPort: 443
+    targetPort: https
     protocol: TCP
   externalIPs:
     - 10.0.0.1
     - 10.0.0.2
     - 10.0.0.3
   selector:
-    app: ingress-nginx
+    app: nginx # Have to be connected with the deployment nginx
