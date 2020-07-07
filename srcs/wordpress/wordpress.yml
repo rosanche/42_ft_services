@@ -52,18 +52,3 @@ spec:
         - containerPort: 5050
           name: wordpress
         imagePullPolicy: IfNotPresent
-
-# ---
-
-# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   namespace: metallb-system
-#   name: config
-# data:
-#   config: |
-#     address-pools:
-#     - name: default
-#       protocol: layer2
-#       addresses:
-#         - 192.168.99.124-192.168.99.124
