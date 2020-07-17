@@ -7,6 +7,8 @@ kubectl delete -f srcs/wordpress/wordpress.yml
 kubectl delete -f srcs/phpmyadmin/phpmyadmin.yml
 kubectl delete -f srcs/ftps/ftps.yml
 kubectl delete -f srcs/grafana/grafana.yml
+kubectl delete -f srcs/influxdb/influxdb.yml
+kubectl delete -f srcs/telegraf/telegraf.yml
 
 
 # Install metallb
@@ -25,8 +27,12 @@ docker build -t services/phpmyadmin srcs/phpmyadmin/
 sleep 1
 # docker build -t services/ftps srcs/ftps/
 # sleep 1
-# docker build -t services/grafana srcs/grafana/
-# sleep 1
+docker build -t services/influxdb srcs/influxdb/
+sleep 1
+docker build -t services/telegraf srcs/telegraf/
+sleep 1
+docker build -t services/grafana srcs/grafana/
+sleep 1
 
 # Apply pods and services
 kubectl apply -f srcs/nginx/nginx.yml
@@ -39,8 +45,14 @@ kubectl apply -f srcs/phpmyadmin/phpmyadmin.yml
 sleep 1
 # kubectl apply -f srcs/ftps/ftps.yml
 # sleep 1
-# kubectl apply -f srcs/grafana/grafana.yml
-# sleep 1
+kubectl apply -f srcs/influxdb/influxdb.yml
+sleep 1
+kubectl apply -f srcs/telegraf/telegraf.yml
+sleep 1
+kubectl apply -f srcs/grafana/grafana.yml
+sleep 1
+kubectl apply -f srcs/metallb.yml
+sleep 1
 
 # Start dashboard
 # minikube dashboard &

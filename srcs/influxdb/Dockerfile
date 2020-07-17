@@ -1,4 +1,4 @@
-FROM alpine:lastest
+FROM alpine:latest
 
 RUN apk add influxdb ; \
 	apk add openrc ; \

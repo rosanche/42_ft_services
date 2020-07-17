@@ -1,3 +1,16 @@
+#! /bin/bash
+
+# sed_configs () {
+#     sed -i.bak 's/MINIKUBE_IP/'"$1"'/g' $2
+#     sleep 1
+# }
+
+# sed_configs_back () {
+#     sed -i.bak "s/$1/""MINIKUBE_IP"'/g' $2
+#     sleep 1
+# }
+
+
 # Install and verify that docker is running
 # bash init_docker.sh
 # docker-machine create default
@@ -21,7 +34,7 @@
 export MINIKUBE_HOME=/goinfre/${USER}/
 # export MINIKUBE_HOME=/tmp
 # minikube start --vm-driver=virtualbox
-minikube start driver=virtualbox
+minikube start driver=virtualbox --bootstrapper=kubeadm
 
 if [[ $? == 0 ]]
 then
@@ -35,6 +48,17 @@ else
     exit
 fi
 
+# Minikube IP
+MINIKUBE_IP=`minikube ip`
+sed_list="srcs/telegraf/telegraf.conf"
+
+# # File configuration
+# for name in $sed_list
+# do
+#     sed_configs $MINIKUBE_IP $name
+# done
+
+# sed -i.bak 's/MINIKUBE_IP/'"$MINIKUBE_IP"'/g' srcs/telegraf/telegraf.conf
 
 # Delete all pods
 kubectl delete -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/namespace.yaml
@@ -63,8 +87,12 @@ docker build -t services/phpmyadmin srcs/phpmyadmin/
 sleep 1
 # docker build -t services/ftps srcs/ftps/
 # sleep 1
-# docker build -t services/grafana srcs/grafana/
-# sleep 1
+docker build -t services/influxdb srcs/influxdb/
+sleep 1
+docker build -t services/telegraf srcs/telegraf/
+sleep 1
+docker build -t services/grafana srcs/grafana/
+sleep 1
 
 # Apply pods and services
 kubectl apply -f srcs/nginx/nginx.yml
@@ -77,8 +105,19 @@ kubectl apply -f srcs/phpmyadmin/phpmyadmin.yml
 sleep 1
 # kubectl apply -f srcs/ftps/ftps.yml
 # sleep 1
-# kubectl apply -f srcs/grafana/grafana.yml
-# sleep 1
+kubectl apply -f srcs/influxdb/influxdb.yml
+sleep 1
+kubectl apply -f srcs/telegraf/telegraf.yml
+sleep 1
+kubectl apply -f srcs/grafana/grafana.yml
+sleep 1
+kubectl apply -f srcs/metallb.yml
+sleep 1
+
+# for name in $sed_list
+# do
+#     sed_configs_back $MINIKUBE_IP $name
+# done
 
 # Start dashboard
-minikube dashboard &
+# minikube dashboard &

@@ -1,4 +1,4 @@
-  FROM	alpine:latest
+FROM	alpine:latest
 
 RUN	apk add curl ; \
 	apk add openrc
@@ -11,7 +11,7 @@ RUN	wget https://dl.influxdata.com/telegraf/releases/telegraf-1.14.0-static_linu
         cp telegraf/telegraf /usr/bin/ ; \
         rm -rf *.tar.gz* telegraf
 
-COPY	telegraf.conf etc/telegraf/telegraf.conf	
+COPY telegraf.conf etc/telegraf/telegraf.conf	
 
 EXPOSE	8125
 
