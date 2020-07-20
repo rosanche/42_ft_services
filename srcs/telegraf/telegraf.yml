@@ -14,6 +14,7 @@ spec:
       labels:
         app: telegraf
     spec:
+      serviceAccountName: telegraf
       containers:
       - image: services/telegraf
         imagePullPolicy: IfNotPresent
@@ -43,3 +44,27 @@ spec:
       targetPort: 8125
   selector:
     app: telegraf
+
+---
+
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  name: telegraf
+  labels:
+    app: telegraf
+
+---
+
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: telegraf
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: cluster-admin
+subjects:
+- kind: ServiceAccount
+  name: telegraf
+  namespace: default

@@ -1,3 +1,8 @@
+MINIKUBE_IP=`minikube ip`
+
+sed -i.bak 's/MINIKUBE_IP/'"$MINIKUBE_IP"'/g' srcs/telegraf/telegraf.conf
+    sleep 1
+
 # Delete all pods
 kubectl delete -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/namespace.yaml
 kubectl delete -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/metallb.yaml

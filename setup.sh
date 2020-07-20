@@ -1,14 +1,14 @@
 #! /bin/bash
 
-# sed_configs () {
-#     sed -i.bak 's/MINIKUBE_IP/'"$1"'/g' $2
-#     sleep 1
-# }
+sed_configs () {
+    sed -i.bak 's/MINIKUBE_IP/'"$1"'/g' $2
+    sleep 1
+}
 
-# sed_configs_back () {
-#     sed -i.bak "s/$1/""MINIKUBE_IP"'/g' $2
-#     sleep 1
-# }
+sed_configs_back () {
+    sed -i.bak "s/$1/""MINIKUBE_IP"'/g' $2
+    sleep 1
+}
 
 
 # Install and verify that docker is running

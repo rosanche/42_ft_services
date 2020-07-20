@@ -9,7 +9,7 @@ RUN	set -ex ; \
 	apk add --no-cache libc6-compat ca-certificates su-exec bash ; \
 	apk add openrc
 
-# COPY	grafana.db /grafana-6.7.1/data/
+COPY	grafana.db /grafana-6.7.1/data/
 
 EXPOSE	3000
 

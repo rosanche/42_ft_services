@@ -74,3 +74,4 @@ spec:
       - name: influxdb-persistent-storage
         persistentVolumeClaim:
           claimName: influxdb-pv-claim
+          
