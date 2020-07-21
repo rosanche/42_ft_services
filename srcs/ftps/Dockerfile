@@ -16,6 +16,6 @@ RUN	chmod 775 setup.sh
 
 VOLUME	/ftp/ftp
 
-EXPOSE	21 21000
+EXPOSE	21 21000-21010
 
 CMD	/setup.sh

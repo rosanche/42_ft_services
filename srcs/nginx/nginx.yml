@@ -13,6 +13,10 @@ spec:
     port: 443
     targetPort: 443
     protocol: TCP
+  - name: ssh
+    port: 22
+    targetPort: 22
+    protocol: TCP
   selector:
     app: nginx-app
 
@@ -42,19 +46,11 @@ spec:
           name: http
         - containerPort: 443
           name: https
+        - containerPort: 22
+          name: ssh
         imagePullPolicy: IfNotPresent
-
-# ---
-
-# apiVersion: v1
-# kind: ConfigMap
-# metadata:
-#   namespace: metallb-system
-#   name: config
-# data:
-#   config: |
-#     address-pools:
-#     - name: default
-#       protocol: layer2
-#       addresses:
-#         - 192.168.99.124-192.168.99.128
+        env: 
+        - name: SSH_USER
+          value: admin
+        - name: SSH_PASSWORD
+          value: admin
