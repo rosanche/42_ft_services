@@ -1,13 +1,13 @@
 #! /bin/bash
 
 sed_configs () {
-    sed -i.bak 's/MINIKUBE_IP/'"$1"'/g' $2
+    sudo sed -i.bak 's/MINIKUBE_IP/'"$1"'/g' $2
     echo "configured $2 with $1"
     sleep 1
 }
 
 sed_configs_back () {
-    sed -i.bak "s/$1/""MINIKUBE_IP"'/g' $2
+    sudo sed -i.bak "s/$1/""MINIKUBE_IP"'/g' $2
     echo "deconfigured $2"
     sleep 1
 }
@@ -30,7 +30,7 @@ sudo minikube start driver=docker --bootstrapper=kubeadm
 
 if [[ $? == 0 ]]
 then
-    eval $(minikube docker-env)
+    eval $(sudo minikube docker-env)
     printf "Minikube started\n"
     # bash -c 'bash ; minikube dashboard'
     # minikube dashboard
@@ -41,7 +41,7 @@ else
 fi
 
 # Minikube IP
-MINIKUBE_IP=`minikube ip`
+MINIKUBE_IP=`sudo minikube ip`
 sed_list="srcs/telegraf/telegraf.conf srcs/ftps/setup.sh"
 
 # File configuration
@@ -84,4 +84,4 @@ do
 done
 
 # Start dashboard
-minikube dashboard &
+sudo minikube dashboard &
