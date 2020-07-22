@@ -2,11 +2,13 @@
 
 sed_configs () {
     sed -i.bak 's/MINIKUBE_IP/'"$1"'/g' $2
+    echo "configured $2 with $1"
     sleep 1
 }
 
 sed_configs_back () {
     sed -i.bak "s/$1/""MINIKUBE_IP"'/g' $2
+    echo "deconfigured $2"
     sleep 1
 }
 
@@ -23,7 +25,8 @@ docker-machine start
 
 # # # Install and launch minikube
 export MINIKUBE_HOME=/goinfre/${USER}/
-minikube start driver=virtualbox --bootstrapper=kubeadm
+# minikube start driver=virtualbox --bootstrapper=kubeadm
+sudo minikube start driver=docker --bootstrapper=kubeadm
 
 if [[ $? == 0 ]]
 then
@@ -39,7 +42,7 @@ fi
 
 # Minikube IP
 MINIKUBE_IP=`minikube ip`
-sed_list="srcs/telegraf/telegraf.conf srcs/ftps/setup.sh srcs/mysql/wordpress.sql"
+sed_list="srcs/telegraf/telegraf.conf srcs/ftps/setup.sh"
 
 # File configuration
 for name in $sed_list
@@ -81,4 +84,4 @@ do
 done
 
 # Start dashboard
-# minikube dashboard &
+minikube dashboard &

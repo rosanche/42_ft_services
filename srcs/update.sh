@@ -11,14 +11,14 @@ sed_configs_back () {
 }
 
 build_apply () {
-    docker build -t services/$1 srcs/$1
+    docker build -t services/$1 $1
     sleep 1
-    kubectl apply -f srcs/$1/$1.yml
+    kubectl apply -f $1/$1.yml
 }
 
 # Minikube IP
 MINIKUBE_IP=`minikube ip`
-sed_list="srcs/telegraf/telegraf.conf srcs/ftps/setup.sh srcs/mysql/wordpress.sql"
+sed_list="telegraf/telegraf.conf ftps/setup.sh mysql/wordpress.sql"
 
 # File configuration
 for name in $sed_list
@@ -29,14 +29,14 @@ done
 # Delete all pods
 kubectl delete -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/namespace.yaml
 kubectl delete -f https://raw.githubusercontent.com/metallb/metallb/v0.9.3/manifests/metallb.yaml
-kubectl delete -f srcs/nginx/nginx.yml
-kubectl delete -f srcs/mysql/mysql.yml
-kubectl delete -f srcs/wordpress/wordpress.yml
-kubectl delete -f srcs/phpmyadmin/phpmyadmin.yml
-kubectl delete -f srcs/ftps/ftps.yml
-kubectl delete -f srcs/grafana/grafana.yml
-kubectl delete -f srcs/influxdb/influxdb.yml
-kubectl delete -f srcs/telegraf/telegraf.yml
+kubectl delete -f nginx/nginx.yml
+kubectl delete -f mysql/mysql.yml
+kubectl delete -f wordpress/wordpress.yml
+kubectl delete -f phpmyadmin/phpmyadmin.yml
+kubectl delete -f ftps/ftps.yml
+kubectl delete -f grafana/grafana.yml
+kubectl delete -f influxdb/influxdb.yml
+kubectl delete -f telegraf/telegraf.yml
 
 
 # Install metallb
@@ -46,7 +46,7 @@ kubectl create secret generic -n metallb-system memberlist --from-literal=secret
 
 services="nginx mysql wordpress phpmyadmin ftps influxdb telegraf grafana"
 
-kubectl apply -f srcs/metallb.yml
+kubectl apply -f metallb.yml
 # build images and apply deployments
 for service in $services
 do
