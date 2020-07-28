@@ -50,7 +50,7 @@ fi
 # Minikube IP
 MINIKUBE_IP="$(kubectl get node -o=custom-columns='DATA:status.addresses[0].address' | sed -n 2p)"
 
-sed_list="srcs/telegraf/telegraf.conf srcs/ftps/setup.sh"
+sed_list="srcs/telegraf/telegraf.conf"
 
 # File configuration
 for name in $sed_list
@@ -81,8 +81,10 @@ services="nginx mysql wordpress phpmyadmin ftps influxdb telegraf grafana"
 if [ $MAC_42 -eq 1 ]
 then
     kubectl apply -f srcs/metallb.yml
+    sed_configs 192.168.99.127 srcs/ftps/setup.sh
 else
     kubectl apply -f srcs/metallbVM.yml
+    sed_configs 172.17.0.5 srcs/ftps/setup.sh
 fi
 
 # build images and apply deployments
