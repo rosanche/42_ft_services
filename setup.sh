@@ -1,13 +1,19 @@
 #! /bin/bash
 
+set -x
+
 export MAC_42=1
-export sudo='sudo';
+export sudo='';
 export driver='docker'
 
 if [ $MAC_42 -eq 1 ]
 then
     export sudo=''
     export driver='virtualbox'
+    export MINIKUBE_HOME=/goinfre/${USER}/
+    # Install and verify that docker is running
+    docker-machine create default
+    docker-machine start
 fi
 
 sed_configs () {
@@ -28,15 +34,8 @@ build_apply () {
     kubectl apply -f srcs/$1/$1.yml
 }
 
-
-# Install and verify that docker is running
-docker-machine create default
-docker-machine start
-
 # # # Install and launch minikube
-export MINIKUBE_HOME=/goinfre/${USER}/
-# minikube start driver=virtualbox --bootstrapper=kubeadm
-$sudo minikube start driver=$driver  --bootstrapper=kubeadm
+$sudo minikube start --vm-driver=$driver  --bootstrapper=kubeadm
 
 if [[ $? == 0 ]]
 then
@@ -49,7 +48,8 @@ else
 fi
 
 # Minikube IP
-MINIKUBE_IP=`$sudo minikube ip`
+MINIKUBE_IP="$(kubectl get node -o=custom-columns='DATA:status.addresses[0].address' | sed -n 2p)"
+
 sed_list="srcs/telegraf/telegraf.conf srcs/ftps/setup.sh"
 
 # File configuration
@@ -78,7 +78,13 @@ kubectl create secret generic -n metallb-system memberlist --from-literal=secret
 
 services="nginx mysql wordpress phpmyadmin ftps influxdb telegraf grafana"
 
-kubectl apply -f srcs/metallb.yml
+if [ $MAC_42 -eq 1 ]
+then
+    kubectl apply -f srcs/metallb.yml
+else
+    kubectl apply -f srcs/metallbVM.yml
+fi
+
 # build images and apply deployments
 for service in $services
 do
