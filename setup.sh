@@ -82,9 +82,11 @@ if [ $MAC_42 -eq 1 ]
 then
     kubectl apply -f srcs/metallb.yml
     sed_configs 192.168.99.127 srcs/ftps/setup.sh
+    sed_configs 192.168.99.125 srcs/mysql/wordpress.sql
 else
     kubectl apply -f srcs/metallbVM.yml
     sed_configs 172.17.0.5 srcs/ftps/setup.sh
+    sed_configs 172.17.0.3 srcs/mysql/wordpress.sql
 fi
 
 # build images and apply deployments
